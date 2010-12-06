@@ -27,4 +27,9 @@ describe Factory::Attribute do
   it "should convert names to symbols" do
     Factory::Attribute.new('name').name.should == :name
   end
+
+  it "should be ignorable" do
+    @attr.ignore
+    @attr.should be_ignored
+  end
 end

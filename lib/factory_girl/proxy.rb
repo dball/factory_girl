@@ -8,10 +8,15 @@ class Factory
     end
 
     def get(attribute)
-      nil
+      @ignored && @ignored[attribute]
     end
 
     def set(attribute, value)
+    end
+
+    def ignore(attribute, value)
+      @ignored = {}
+      @ignored[attribute] = value
     end
 
     def associate(name, factory, attributes)
@@ -26,7 +31,12 @@ class Factory
     def run_callbacks(name)
       if @callbacks && @callbacks[name]
         @callbacks[name].each do |block|
-          block.arity.zero? ? block.call : block.call(@instance)
+          case block.arity
+            when 0 then block.call
+            when 2 then block.call(@instance, self)
+            else
+              block.call(@instance)
+          end
         end
       end
     end

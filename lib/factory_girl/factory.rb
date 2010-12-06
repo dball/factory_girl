@@ -79,7 +79,7 @@ class Factory
     assert_valid_options(options)
     @factory_name = factory_name_for(name)
     @options      = options
-    @attributes   = []
+    @attributes   = Attribute::List.new
   end
 
   def inherit_from(parent) #:nodoc:

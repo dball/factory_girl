@@ -24,6 +24,15 @@ class Factory
 
     def add_to(proxy)
     end
+
+    def ignore
+      @ignored = true
+      self
+    end
+    
+    def ignored?
+      @ignored
+    end
   end
 
 end

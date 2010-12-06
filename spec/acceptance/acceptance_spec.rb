@@ -8,6 +8,7 @@ describe "integration" do
       f.last_name  'Hendrix'
       f.admin       false
       f.email {|a| "#{a.first_name}.#{a.last_name}@example.com".downcase }
+      f.rockstar(true).ignore
     end
 
     Factory.define Post, :default_strategy => :attributes_for do |f|
@@ -36,6 +37,10 @@ describe "integration" do
       f.after_stub   {|u| u.first_name = 'Stubby' }
       f.after_build  {|u| u.first_name = 'Buildy' }
       f.after_create {|u| u.last_name  = 'Createy' }
+    end
+
+    Factory.define :user_with_callbacks_using_proxy, :parent => :user do |f|
+      f.after_create {|u, p| u.last_name << ', Rock Star' if p.rockstar }
     end
 
     Factory.define :user_with_inherited_callbacks, :parent => :user_with_callbacks do |f|
@@ -300,6 +305,11 @@ describe "integration" do
       @user = Factory.stub(:user_with_inherited_callbacks)
       @user.first_name.should == 'Stubby'
       @user.last_name.should == 'Double-Stubby'
+    end
+
+    it "should provide the proxy to callbacks that want it" do
+      @user = Factory(:user_with_callbacks_using_proxy)
+      @user.last_name.should == 'Hendrix, Rock Star'
     end
   end
 end
